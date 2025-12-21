@@ -20,13 +20,22 @@ Including another URLconf
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
 # ]
+from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from market.views import OrderViewSet
-
-router = DefaultRouter()
-router.register(r'orders', OrderViewSet)
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    # Main Admin Panel
+    path('admin/', admin.site.urls),
+
+    # Market App (Orders/Bidding logic)
+    path('api/', include('market.urls')), 
+
+    # Products App (Hardware items)
+    path('api/products/', include('products.urls')),
 ]
+
+# CRITICAL: This serves images from your /media/ folder in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
