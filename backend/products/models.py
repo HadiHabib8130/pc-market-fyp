@@ -22,3 +22,15 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def highest_buy(self):
+        # Finds the highest OPEN Buy Order for this product
+        order = self.orders.filter(order_type='BUY', status='OPEN').order_by('-price').first()
+        return order.price if order else None
+
+    @property
+    def lowest_sell(self):
+        # Finds the lowest OPEN Sell Order for this product
+        order = self.orders.filter(order_type='SELL', status='OPEN').order_by('price').first()
+        return order.price if order else None

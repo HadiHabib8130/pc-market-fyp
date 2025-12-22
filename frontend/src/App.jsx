@@ -35,30 +35,50 @@ useEffect(() => {
 
 
 
-  return (
-    <div className="min-h-screen bg-slate-950 text-white p-8">
-      <h1 className="text-3xl font-black text-blue-500 mb-8">TECH-MARKET</h1>
+ return (
+  <div className="min-h-screen bg-slate-950 text-white selection:bg-blue-500/30">
+    {/* Minimalist Navbar */}
+    <Navbar onHome={() => setSelectedProduct(null)} products={products} />
 
-      {/* Main Switch Logic */}
+    <main className="max-w-7xl mx-auto p-8">
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-900/20 border border-red-500 p-4 rounded-xl flex items-center gap-3 text-red-400 mb-8">
+          <AlertCircle size={20} />
+          {error}
+        </div>
+      )}
+
+      {/* Main Content Switch */}
       {!selectedProduct ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {products.map(product => (
             <div 
               key={product.id} 
-              onClick={() => setSelectedProduct(product)} // Trigger detail view
-              className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden p-4 cursor-pointer hover:border-blue-500 transition-all"
+              onClick={() => setSelectedProduct(product)}
+              className="group bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden cursor-pointer hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300"
             >
-              <div className="aspect-video bg-black rounded-xl mb-4 overflow-hidden">
+              <div className="aspect-video bg-black overflow-hidden relative">
                 <img 
                   src={product.image?.startsWith('http') ? product.image : `http://127.0.0.1:8000${product.image}`} 
                   alt={product.name}
-                  className="w-full h-48 object-cover rounded-t-lg"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              <h3 className="font-bold text-xl">{product.name}</h3>
-              <div className="flex justify-between mt-4">
-                <span className="text-green-400 font-mono">Buy: ${product.highest_buy || '---'}</span>
-                <span className="text-red-400 font-mono">Sell: ${product.lowest_sell || '---'}</span>
+              
+              <div className="p-6">
+                <h3 className="font-bold text-xl group-hover:text-blue-400 transition-colors">{product.name}</h3>
+                <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-500 uppercase tracking-widest">Highest Buy</span>
+                    <span className="text-green-400 font-mono font-bold text-lg">{product.highest_buy ? `Rs.${product.highest_buy}` : 'No Bids'}</span>
+                  </div>
+                  <div className="flex flex-col text-right">
+                    <span className="text-[10px] text-slate-500 uppercase tracking-widest">Lowest Sell</span>
+                    <span className="text-red-400 font-mono font-bold text-lg">{product.lowest_sell ? `Rs.${product.lowest_sell}` : 'No Asks'}</span>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -70,9 +90,69 @@ useEffect(() => {
           onBack={() => setSelectedProduct(null)} 
         />
       )}
-    </div>
-  );
+    </main>
+  </div>
+);
 }
+
+const Navbar = ({ onHome, products }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Extract unique categories from your product list
+  const categories = [...new Set(products.map(p => p.category || 'Uncategorized'))];
+
+  return (
+    <nav className="flex items-center justify-between px-8 py-4 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+      <div 
+        onClick={onHome}
+        className="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer hover:opacity-80 transition-opacity"
+      >
+        TECH-MARKET
+      </div>
+      
+      <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+        <button onClick={onHome} className="hover:text-white transition-colors">Marketplace</button>
+        <button className="hover:text-white transition-colors">Active Bids</button>
+        
+        {/* Categories Dropdown */}
+        <div className="relative">
+          <button 
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="hover:text-white transition-colors flex items-center gap-1"
+          >
+            Categories <TrendingUp size={14} className={isDropdownOpen ? 'rotate-180 transition-transform' : 'transition-transform'} />
+          </button>
+          
+          {isDropdownOpen && (
+            <div className="absolute top-full left-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl py-2 z-[60] animate-in fade-in zoom-in-95 duration-200">
+              {categories.map((cat, index) => (
+                <button 
+                  key={index}
+                  className="w-full text-left px-4 py-2 hover:bg-blue-600 hover:text-white transition-colors text-xs"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="relative hidden sm:block">
+          <Monitor className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+          <input 
+            type="text" 
+            placeholder="Search hardware..." 
+            className="bg-slate-900 border border-slate-800 rounded-full py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-blue-500 w-64 transition-all"
+          />
+        </div>
+        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 border border-white/10 cursor-pointer"></div>
+      </div>
+    </nav>
+  );
+};
 
 const OrderBook = ({ product, orders, onBack }) => {
   // Safety check: If product is somehow missing, show a loading message
@@ -113,7 +193,7 @@ const OrderBook = ({ product, orders, onBack }) => {
           <div className="space-y-3">
             {sellOrders.map(order => (
               <div key={order.id} className="flex justify-between items-center bg-red-500/5 p-4 rounded-xl border border-red-500/10 hover:bg-red-500/10 transition-colors">
-                <span className="text-red-200 font-mono text-lg font-bold">${order.price}</span>
+                <span className="text-red-200 font-mono text-lg font-bold">Rs.{order.price}</span>
                 <span className="text-slate-500 text-xs font-medium">{order.quantity} Units Available</span>
               </div>
             ))}
@@ -130,7 +210,7 @@ const OrderBook = ({ product, orders, onBack }) => {
           <div className="space-y-3">
             {buyOrders.map(order => (
               <div key={order.id} className="flex justify-between items-center bg-green-500/5 p-4 rounded-xl border border-green-500/10 hover:bg-green-500/10 transition-colors">
-                <span className="text-green-200 font-mono text-lg font-bold">${order.price}</span>
+                <span className="text-green-200 font-mono text-lg font-bold">Rs.{order.price}</span>
                 <span className="text-slate-500 text-xs font-medium">Seeking {order.quantity} Units</span>
               </div>
             ))}
