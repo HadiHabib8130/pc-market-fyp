@@ -1,20 +1,46 @@
 from rest_framework import viewsets, permissions
-from .models import Order, Trade
-from .serializers import OrderSerializer
-
+from .models import Order, match_order, BuyOrder
+from .serializers import OrderSerializer, BuyOrderSerializer, ProductListingDetailSerializer, BuyOrderDetailSerializer
+# Fix: Ensure this points to products.models
+from products.models import MasterProduct, ProductListing 
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.exceptions import PermissionDenied
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        # This automatically attaches the logged-in React user to the order
-        serializer.save(user=self.request.user)
+        order = serializer.save(user=self.request.user)
+        match_order(order)
 
-    def get_queryset(self):
-        # Allow filtering by product via URL, e.g., /api/orders/?product=1
-        queryset = Order.objects.all()
-        product_id = self.request.query_params.get('product')
-        if product_id:
-            queryset = queryset.filter(product_id=product_id)
-        return queryset
+
+class CreateBuyOrderView(generics.CreateAPIView):
+    # 1. Base configuration
+    queryset = BuyOrder.objects.all()
+    serializer_class = BuyOrderSerializer
+    
+    # 2. PRIMARY SECURITY: Reject anyone without a valid JWT token
+    permission_classes = [IsAuthenticated] 
+
+    def perform_create(self, serializer):
+        # 3. SECONDARY SECURITY: Ensure only 'buyers' can place bids
+        if self.request.user.role != 'buyer':
+            raise PermissionDenied("Access Denied: Only registered buyers can place orders on the exchange.")
+        
+        # 4. Save the row and automatically attach the logged-in user!
+        serializer.save(buyer=self.request.user)
+
+class SingleListingDetailView(generics.RetrieveAPIView):
+    """Fetches full details, images, and seller info for a single listing."""
+    queryset = ProductListing.objects.filter(is_active=True)
+    serializer_class = ProductListingDetailSerializer
+    permission_classes = [AllowAny]
+
+class SingleBuyOrderDetailView(generics.RetrieveAPIView):
+    """Fetches full details and buyer info for a specific active bid."""
+    # We only want to show bids that are still 'pending'
+    queryset = BuyOrder.objects.filter(status='pending')
+    serializer_class = BuyOrderDetailSerializer
+    permission_classes = [AllowAny]

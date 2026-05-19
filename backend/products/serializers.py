@@ -1,13 +1,56 @@
 from rest_framework import serializers
-from .models import Product, Category
+from .models import MasterProduct, ProductListing, ListingImage
+from django.db.models import Max
+from market.models import BuyOrder
+class MasterProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MasterProduct
+        fields = '__all__'
 
-class ProductSerializer(serializers.ModelSerializer):
-    # This 'flattens' the category relationship to just show the name string
-    category = serializers.ReadOnlyField(source='category.name')
-    highest_buy = serializers.ReadOnlyField() # Includes the property above
-    lowest_sell = serializers.ReadOnlyField() # Includes the property above
+class ProductListingSerializer(serializers.ModelSerializer):
+    # This shows the master product details (name, photo) inside the listing
+    master_product_details = MasterProductSerializer(source='master_product', read_only=True)
 
     class Meta:
-        model = Product
-        # Explicitly listing fields is safer for your API
-        fields = ['id', 'name', 'slug', 'description', 'image', 'category', 'created_at','highest_buy', 'lowest_sell']
+        model = ProductListing
+        fields = [
+            'id', 'master_product', 'master_product_details', 'price', 
+            'condition', 'description', 'has_warranty', 
+            'warranty_months', 'warranty_info', 'created_at'
+        ]
+
+class ListingImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ListingImage
+        fields = ['id', 'image']
+
+class ProductListingSerializer(serializers.ModelSerializer):
+    master_product_details = MasterProductSerializer(source='master_product', read_only=True)
+    # This allows us to see the list of images for each listing
+    images = ListingImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ProductListing
+        fields = [
+            'id', 'master_product', 'master_product_details', 'images', 
+            'price', 'condition', 'description', 'has_warranty', 
+            'warranty_months', 'warranty_info', 'created_at'
+        ]
+
+class MasterProductSerializer(serializers.ModelSerializer):
+    min_sell = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    max_buy = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MasterProduct
+        # Ensure max_buy is in the fields list
+        fields = ['id', 'brand', 'model_name', 'category', 'stock_image_url', 'min_sell', 'max_buy']
+
+    def get_max_buy(self, obj):
+        # 2. CRITICAL FIX: Query the specific table directly instead of using obj.bids!
+        highest = BuyOrder.objects.filter(
+            master_product=obj, 
+            status='pending'
+        ).aggregate(Max('bid_price'))['bid_price__max']
+        
+        return highest if highest else None
