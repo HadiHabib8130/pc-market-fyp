@@ -188,4 +188,94 @@ class MarketTradingRoomView(APIView):
             
         except MasterProduct.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class SellerProductListingListView(generics.ListAPIView):
+    """
+    Returns only the listings uploaded by the currently logged-in seller.
+    """
+    serializer_class = ProductListingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return ProductListing.objects.filter(seller=self.request.user).order_by('-created_at')
+
+
+class SellerProductListingDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Allows a logged-in seller to retrieve, update (edit), or delete their own listing.
+    """
+    serializer_class = ProductListingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Enforces that a seller can ONLY access/update/delete their own listings!
+        return ProductListing.objects.filter(seller=self.request.user)
+
+
+class SellerDashboardBidsView(APIView):
+    """
+    Returns active product listings that have at least one pending buy order
+    on the same MasterProduct, sorted by the minimum gap between the listing price
+    and the best buy order price.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        scope = request.query_params.get('scope', 'my') # 'my' or 'all'
+        
+        # 1. Fetch active listings
+        if scope == 'my':
+            listings = ProductListing.objects.filter(seller=request.user, is_active=True)
+        else:
+            listings = ProductListing.objects.filter(is_active=True)
+            
+        results = []
+        for listing in listings:
+            # Find all pending buy orders for this master product
+            pending_bids = BuyOrder.objects.filter(
+                master_product=listing.master_product,
+                status='pending'
+            ).order_by('-bid_price') # Highest bid first
+            
+            if pending_bids.exists():
+                best_bid = pending_bids[0]
+                gap = listing.price - best_bid.bid_price
+                
+                # We serialize the listing details
+                listing_data = {
+                    "id": listing.id,
+                    "price": float(listing.price),
+                    "condition": listing.condition,
+                    "description": listing.description,
+                    "has_warranty": listing.has_warranty,
+                    "warranty_months": listing.warranty_months,
+                    "warranty_info": listing.warranty_info,
+                    "created_at": listing.created_at,
+                    "seller_username": listing.seller.username,
+                    "master_product": {
+                        "id": listing.master_product.id,
+                        "brand": listing.master_product.brand,
+                        "model_name": listing.master_product.model_name,
+                        "category": listing.master_product.category,
+                        "stock_image_url": listing.master_product.stock_image_url,
+                    },
+                    "best_bid": {
+                        "id": best_bid.id,
+                        "bid_price": float(best_bid.bid_price),
+                        "buyer_username": best_bid.buyer.username,
+                        "condition": best_bid.condition,
+                        "requires_warranty": best_bid.requires_warranty,
+                        "created_at": best_bid.created_at,
+                    },
+                    "gap": float(gap)
+                }
+                results.append(listing_data)
+                
+        # 2. Sort by gap ascending (minimum gap on top, going lower as gap increases)
+        results.sort(key=lambda x: x['gap'])
+        
+        return Response(results, status=status.HTTP_200_OK)
+
+
         

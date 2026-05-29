@@ -44,3 +44,26 @@ class SingleBuyOrderDetailView(generics.RetrieveAPIView):
     queryset = BuyOrder.objects.filter(status='pending')
     serializer_class = BuyOrderDetailSerializer
     permission_classes = [AllowAny]
+
+
+class BuyerBuyOrderListView(generics.ListAPIView):
+    """
+    Lists only the active/all buy orders placed by the currently logged-in buyer.
+    """
+    serializer_class = BuyOrderDetailSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return BuyOrder.objects.filter(buyer=self.request.user).order_by('-created_at')
+
+
+class BuyerBuyOrderDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Allows a logged-in buyer to retrieve, update (edit price/condition), or cancel (delete) their own bid.
+    """
+    serializer_class = BuyOrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Enforces that a buyer can ONLY access/update/delete their own buy orders!
+        return BuyOrder.objects.filter(buyer=self.request.user)

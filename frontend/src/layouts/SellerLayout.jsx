@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom'; // Changed Link to NavLink
-import { LayoutDashboard, PackagePlus, PlusCircle, LogOut } from 'lucide-react'; // Added PlusCircle
+import { LayoutDashboard, PackagePlus, PlusCircle, LogOut, User } from 'lucide-react'; // Added PlusCircle, User
 
 const SellerLayout = () => {
   // Helper function to handle active styling
@@ -31,6 +31,11 @@ const SellerLayout = () => {
           {/* NEW: Add Product Tab */}
           <NavLink to="/seller-hub/portal/add-product" className={navLinkClass}>
             <PlusCircle size={18} /> Add Product
+          </NavLink>
+
+          {/* NEW: Edit Account Tab */}
+          <NavLink to="/seller-hub/portal/account" className={navLinkClass}>
+            <User size={18} /> Edit Account
           </NavLink>
         </nav>
 
