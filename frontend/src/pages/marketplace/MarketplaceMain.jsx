@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import API from '../api';
 
 const MarketplaceMain = () => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const MarketplaceMain = () => {
     if (!token) return;
 
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/users/me/', {
+      const response = await API.get('users/me/', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -87,7 +88,7 @@ const MarketplaceMain = () => {
   const fetchMarketData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/products/master-list/', {
+      const response = await API.get('products/master-list/', {
         params: { 
           category: category !== 'All' ? category : '',
           q: searchQuery 
