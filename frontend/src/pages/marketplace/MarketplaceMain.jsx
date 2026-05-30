@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import API from '../api';
+
 
 const MarketplaceMain = () => {
   const navigate = useNavigate();
