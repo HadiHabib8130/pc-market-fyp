@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import SellerLayout from './layouts/SellerLayout';
 import SellerHubLanding from './pages/seller/SellerHubLanding';
 import Registration from './pages/seller/Registration';
