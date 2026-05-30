@@ -137,7 +137,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             profile = self.user.buyer_profile
             data['display_name'] = profile.display_name if profile.display_name else self.user.username
             if profile.profile_picture:
-                data['profile_picture'] = f"http://127.0.0.1:8000{profile.profile_picture.url}"
+                data['profile_picture'] = f"https://hadi8130.pythonanywhere.com{profile.profile_picture.url}"
             else:
                 data['profile_picture'] = None
         else:

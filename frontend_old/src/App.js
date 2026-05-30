@@ -56,7 +56,7 @@ function App() {
           products.map(product => (
             <div key={product.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden p-4">
               <div className="aspect-video bg-black rounded-xl mb-4 overflow-hidden">
-                <img src={product.image.startsWith('http') ? product.image : `http://127.0.0.1:8000${product.image}`} 
+                <img src={product.image.startsWith('http') ? product.image : `https://hadi8130.pythonanywhere.com${product.image}`} 
   alt={product.name}
   className="w-full h-full object-cover" />
               </div>
