@@ -31,7 +31,7 @@ const BuyerRegister = () => {
     if (file) data.append('profile_picture', file);
 
     try {
-      await axios.post('http://127.0.0.1:8000/api/users/register/', data, {
+      await axios.post('https://hadi8130.pythonanywhere.com/api/users/register/', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert("Registration complete! Welcome to the Exchange.");

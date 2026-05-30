@@ -34,7 +34,7 @@ const SellerAccount = () => {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
       if (!token) return;
 
-      const response = await axios.get('http://127.0.0.1:8000/api/users/account/me/', {
+      const response = await axios.get('https://hadi8130.pythonanywhere.com/api/users/account/me/', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -86,7 +86,7 @@ const SellerAccount = () => {
 
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
-      await axios.patch('http://127.0.0.1:8000/api/users/account/me/', submitData, {
+      await axios.patch('https://hadi8130.pythonanywhere.com/api/users/account/me/', submitData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -176,7 +176,7 @@ const SellerAccount = () => {
                 {photoPreview ? (
                   <img src={photoPreview} className="w-full h-full object-cover" alt="New Upload Preview" />
                 ) : profileDetails?.shop_photo ? (
-                  <img src={`http://127.0.0.1:8000${profileDetails.shop_photo}`} className="w-full h-full object-cover" alt="Current Shop" />
+                  <img src={`https://hadi8130.pythonanywhere.com${profileDetails.shop_photo}`} className="w-full h-full object-cover" alt="Current Shop" />
                 ) : (
                   <div className="text-slate-600 flex flex-col items-center">
                     <Store size={40} className="mb-2" />

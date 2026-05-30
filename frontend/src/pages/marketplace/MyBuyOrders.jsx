@@ -50,7 +50,7 @@ const MyBuyOrders = () => {
       }
 
       const response = await axios.get(
-        'http://127.0.0.1:8000/api/market/bids/my-bids/',
+        'https://hadi8130.pythonanywhere.com/api/market/bids/my-bids/',
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -90,7 +90,7 @@ const MyBuyOrders = () => {
       };
 
       const response = await axios.patch(
-        `http://127.0.0.1:8000/api/market/bids/${selectedBid.id}/`,
+        `https://hadi8130.pythonanywhere.com/api/market/bids/${selectedBid.id}/`,
         patchData,
         {
           headers: {
@@ -128,7 +128,7 @@ const MyBuyOrders = () => {
     try {
       const token = localStorage.getItem('access_token');
       await axios.delete(
-        `http://127.0.0.1:8000/api/market/bids/${selectedBid.id}/`,
+        `https://hadi8130.pythonanywhere.com/api/market/bids/${selectedBid.id}/`,
         {
           headers: {
             'Authorization': `Bearer ${token}`

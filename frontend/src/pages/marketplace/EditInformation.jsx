@@ -19,7 +19,7 @@ const EditInformation = () => {
     const fetchAccountData = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const response = await axios.get('http://127.0.0.1:8000/api/users/account/me/', {
+        const response = await axios.get('https://hadi8130.pythonanywhere.com/api/users/account/me/', {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -70,7 +70,7 @@ const EditInformation = () => {
 
     try {
       const token = localStorage.getItem('access_token');
-      await axios.patch('http://127.0.0.1:8000/api/users/account/me/', submitData, {
+      await axios.patch('https://hadi8130.pythonanywhere.com/api/users/account/me/', submitData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data' 

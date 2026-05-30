@@ -17,7 +17,7 @@ const BuyerLogin = () => {
 
     try {
       // Confirmed: Targets your explicit high-performance high-security custom endpoint
-      const response = await axios.post('http://127.0.0.1:8000/api/users/login/', {
+      const response = await axios.post('https://hadi8130.pythonanywhere.com/api/users/login/', {
         email: email, // Maps the input text field variable to the backend 'email' lookup key
         password: password
       });

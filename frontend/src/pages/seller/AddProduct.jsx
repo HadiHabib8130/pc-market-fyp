@@ -50,7 +50,7 @@ const AddProduct = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/products/master-search/`,
+        `https://hadi8130.pythonanywhere.com/api/products/master-search/`,
         { params: { q: searchQuery, category: listingData.category } }
       );
       setSearchResults(response.data.results);
@@ -101,7 +101,7 @@ const AddProduct = () => {
 
     try {
       const token = localStorage.getItem('token'); 
-      await axios.post('http://127.0.0.1:8000/api/products/listings/create/', data, {
+      await axios.post('https://hadi8130.pythonanywhere.com/api/products/listings/create/', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`

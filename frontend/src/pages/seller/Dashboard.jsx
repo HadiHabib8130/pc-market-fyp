@@ -39,7 +39,7 @@ const Dashboard = () => {
       }
 
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/products/listings/dashboard-bids/`,
+        `https://hadi8130.pythonanywhere.com/api/products/listings/dashboard-bids/`,
         {
           params: { scope },
           headers: {

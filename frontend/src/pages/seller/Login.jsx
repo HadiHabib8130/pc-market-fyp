@@ -13,7 +13,7 @@ const Login = () => {
     // 1. Actually call your Django SimpleJWT endpoint
     // Note: Django usually expects 'username' and 'password'. 
     // If you use email, ensure your backend is configured for it.
-    const response = await axios.post('http://127.0.0.1:8000/api/users/seller-login/', {
+    const response = await axios.post('https://hadi8130.pythonanywhere.com/api/users/seller-login/', {
       email: email, // or email, depending on your backend setup
       password: password
     });

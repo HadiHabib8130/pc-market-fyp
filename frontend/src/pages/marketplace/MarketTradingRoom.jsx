@@ -23,7 +23,7 @@ const MarketTradingRoom = () => {
 
   const fetchTradingRoomData = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/products/market/${id}/`);
+      const response = await axios.get(`https://hadi8130.pythonanywhere.com/api/products/market/${id}/`);
       setMarketData(response.data);
     } catch (err) {
       console.error("Failed to fetch trading room depth", err);
@@ -56,7 +56,7 @@ const MarketTradingRoom = () => {
     try {
       // 2. Execute secure API request to our custom endpoint
       await axios.post(
-        'http://127.0.0.1:8000/api/market/place-order/', 
+        'https://hadi8130.pythonanywhere.com/api/market/place-order/', 
         {
           master_product: id,
           bid_price: bidPrice,

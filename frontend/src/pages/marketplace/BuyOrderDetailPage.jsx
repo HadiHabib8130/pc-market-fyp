@@ -12,7 +12,7 @@ const BuyOrderDetailPage = () => {
     const fetchBid = async () => {
       try {
         // Points to our new Django URL
-        const response = await axios.get(`http://127.0.0.1:8000/api/market/bid/${id}/`);
+        const response = await axios.get(`https://hadi8130.pythonanywhere.com/api/market/bid/${id}/`);
         setBid(response.data);
       } catch (error) {
         console.error("Error fetching bid:", error);

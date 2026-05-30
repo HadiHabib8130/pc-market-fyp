@@ -59,7 +59,7 @@ const MarketplaceMain = () => {
     if (!token) return;
 
     try {
-      const response = await API.get('users/me/', {
+      const response = await axios.get('https://hadi8130.pythonanywhere.com/api/users/me/', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -88,7 +88,7 @@ const MarketplaceMain = () => {
   const fetchMarketData = async () => {
     setLoading(true);
     try {
-      const response = await API.get('products/master-list/', {
+      const response = await axios.get('https://hadi8130.pythonanywhere.com/api/products/master-list/', {
         params: { 
           category: category !== 'All' ? category : '',
           q: searchQuery 

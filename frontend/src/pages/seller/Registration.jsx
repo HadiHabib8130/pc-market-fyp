@@ -60,7 +60,7 @@ const Registration = () => {
     Object.keys(files).forEach(key => { if (files[key]) data.append(key, files[key]); });
 
 try {
-      await axios.post('http://127.0.0.1:8000/api/users/register-seller/', data);
+      await axios.post('https://hadi8130.pythonanywhere.com/api/users/register-seller/', data);
       setStep(6);
     } catch (err) {
       // THIS WILL SHOW THE EXACT DJANGO ERROR IN THE CONSOLE

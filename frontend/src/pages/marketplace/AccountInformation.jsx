@@ -12,7 +12,7 @@ const AccountInformation = () => {
         // CRITICAL: We must send the Auth Token so Django knows who is asking!
         const token = localStorage.getItem('access_token'); // Or however you store your JWT
         
-        const response = await axios.get('http://127.0.0.1:8000/api/users/account/me/', {
+        const response = await axios.get('https://hadi8130.pythonanywhere.com/api/users/account/me/', {
           headers: {
             Authorization: `Bearer ${token}`
           }

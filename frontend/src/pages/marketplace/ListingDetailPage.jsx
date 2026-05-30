@@ -12,7 +12,7 @@ const ListingDetailPage = () => {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/market/listing/${id}/`);
+        const response = await axios.get(`https://hadi8130.pythonanywhere.com/api/market/listing/${id}/`);
         setListing(response.data);
         
         // Set the first image as active, or fallback to the master product stock image
