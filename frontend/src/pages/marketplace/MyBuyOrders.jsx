@@ -57,7 +57,7 @@ const MyBuyOrders = () => {
           }
         }
       );
-      setBids(response.data);
+      setBid(response.data || response.data);
     } catch (err) {
       console.error("Failed to fetch bids:", err);
       setError("Unable to retrieve buy orders. Please check your network connection and backend status.");

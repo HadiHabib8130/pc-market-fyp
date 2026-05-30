@@ -62,7 +62,7 @@ const MyProducts = () => {
           }
         }
       );
-      setListings(response.data);
+      setListings(response.data || response.data);
     } catch (err) {
       console.error("Failed to fetch listings:", err);
       setError("Unable to load listings. Please ensure the backend server is running and try again.");

@@ -47,7 +47,7 @@ const Dashboard = () => {
           }
         }
       );
-      setMatches(response.data);
+      setMatches(response.data || response.data);
     } catch (err) {
       console.error("Failed to fetch dashboard bids:", err);
       setError("Unable to retrieve spread data. Please make sure the backend Django server is running.");

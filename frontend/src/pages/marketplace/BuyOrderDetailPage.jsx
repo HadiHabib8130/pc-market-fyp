@@ -13,7 +13,7 @@ const BuyOrderDetailPage = () => {
       try {
         // Points to our new Django URL
         const response = await axios.get(`https://hadi8130.pythonanywhere.com/api/market/bid/${id}/`);
-        setBid(response.data || response.data);
+        setBid(response.data);
       } catch (error) {
         console.error("Error fetching bid:", error);
       }
