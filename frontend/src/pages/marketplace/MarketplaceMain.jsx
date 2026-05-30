@@ -88,12 +88,21 @@ const MarketplaceMain = () => {
   const fetchMarketData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('https://hadi8130.pythonanywhere.com/api/products/master-list/', {
+      // Default to your standard paginated list
+      let endpoint = 'https://hadi8130.pythonanywhere.com/api/products/master-list/';
+      
+      // THE MAGIC SWITCH: If on the main homepage, use the custom feed API!
+      if (category === 'All' && !searchQuery) {
+        endpoint = 'https://hadi8130.pythonanywhere.com/api/products/homepage-feed/';
+      }
+
+      const response = await axios.get(endpoint, {
         params: { 
           category: category !== 'All' ? category : '',
           q: searchQuery 
         }
       });
+      
       setMasterProducts(response.data.results || response.data);
     } catch (err) {
       console.error("Market fetch failed", err);
