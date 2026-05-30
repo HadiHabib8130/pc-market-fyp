@@ -94,7 +94,7 @@ const MarketplaceMain = () => {
           q: searchQuery 
         }
       });
-      setMasterProducts(response.data);
+      setMasterProducts(response.data.results || response.data);
     } catch (err) {
       console.error("Market fetch failed", err);
     } finally {
